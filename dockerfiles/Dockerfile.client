@@ -1,0 +1,16 @@
+FROM python:3.9
+
+MAINTAINER public@vadymkhodak.com
+
+COPY client /app/
+COPY __init__.py /app/__init__.py
+COPY blog_post_pb2.py /app/blog_post_pb2.py
+COPY blog_post_pb2_grpc.py /app/blog_post_pb2_grpc.py
+COPY requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+
+CMD ["python", "poster_client.py"]

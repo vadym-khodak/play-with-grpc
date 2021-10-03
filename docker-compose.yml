@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: ./
+      dockerfile: ./dockerfiles/Dockerfile.server
+    ports:
+      - target: 50051
+        published: 50051
+    environment:
+      USE_POSTGRES: true
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: blog
+      DB_USER: postgres
+      DB_PASSWORD: root
+    networks:
+      - grpc_net
+    depends_on:
+      - postgres
+  client:
+    build:
+      context: ./
+      dockerfile: ./dockerfiles/Dockerfile.client
+    environment:
+      SERVER_HOST: server
+      SERVER_PORT: 50051
+    networks:
+      - grpc_net
+    depends_on:
+      - server
+  postgres:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=blog
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    networks:
+      - grpc_net
+
+networks:
+  grpc_net:
