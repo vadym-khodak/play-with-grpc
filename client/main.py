@@ -29,7 +29,7 @@ def create_app() -> FastAPI:
 
     @app.post("/posts")
     async def create_post(post: Post):
-        with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}') as channel:
+        with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}', options=(('grpc.enable_http_proxy', 0),)) as channel:
             logging.warning(f'{config.SERVER_HOST}:{config.SERVER_PORT}')
             stub = BlogPosterStub(channel)
             response = stub.CreatePost(BlogPost(**post.dict()))
@@ -44,7 +44,7 @@ def create_app() -> FastAPI:
 
     @app.get("/posts/{id_}")
     async def get_post(id_: int):
-        with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}') as channel:
+        with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}', options=(('grpc.enable_http_proxy', 0),)) as channel:
             logging.warning(f'{config.SERVER_HOST}:{config.SERVER_PORT}')
             stub = BlogPosterStub(channel)
             response = stub.GetPost(BlogPost(id_=id_))
@@ -59,7 +59,7 @@ def create_app() -> FastAPI:
 
     @app.get("/posts")
     async def get_all_posts(page: int = 1, per_page: int = 10):
-        with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}') as channel:
+        with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}', options=(('grpc.enable_http_proxy', 0),)) as channel:
             logging.warning(f'{config.SERVER_HOST}:{config.SERVER_PORT}')
             stub = BlogPosterStub(channel)
             response = stub.GetAllPost(GetAllPostRequest(page=page, per_page=per_page))

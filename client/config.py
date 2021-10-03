@@ -1,5 +1,9 @@
 import os
 
+if os.environ.get('https_proxy'):
+    del os.environ['https_proxy']
+if os.environ.get('http_proxy'):
+    del os.environ['http_proxy']
 
 ORIGINS = [
     "http://localhost:3000",
