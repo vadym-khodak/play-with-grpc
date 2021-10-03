@@ -5,7 +5,7 @@ There are some of them:
 - [gRPC vs REST: let the battle begin! by Alex Borysov & Mykyta Protsenko](https://www.youtube.com/watch?v=ZDUA5pD50Ok)
 - [gRPC Web: It’s All About Communication by Alex Borysov & Yevgen Golubenko](https://www.youtube.com/watch?v=-dNd8agYGtY&t=1461s)
 
-### Getting started
+### About
 This is a pet project to play with gRPC server with blog posts API written in Python.
 
 There is a Python FastAPI web server that uses Python gRPC client to create and get blog posts.
@@ -20,4 +20,3 @@ There is a Python FastAPI web server that uses Python gRPC client to create and 
 ### Local development
 I use docker and docker compose to run these services locally.
 Run `docker-compose up` to run Python gRPC server, Python FastAPI web server, and postgres database.
-
