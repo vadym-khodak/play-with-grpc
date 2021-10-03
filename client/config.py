@@ -2,7 +2,6 @@ import os
 
 
 ORIGINS = [
-    "http://localhost",
     "http://localhost:3000",
     "http://localhost:80",
     "http://localhost:8000",
