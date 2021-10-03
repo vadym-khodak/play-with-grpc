@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: server-app
+spec:
+  selector:
+    matchLabels:
+      app: server-app
+  replicas: 1
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: server-app
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: server-pod
+          image: vaddimart/play-with-python-grpc:server_v0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50051
+          env:
+            - name: USE_POSTGRES
+              value: "true"
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "blog"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "root"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-client
+  labels:
+    app: python-client-app
+spec:
+  selector:
+    matchLabels:
+      app: python-client-app
+  replicas: 1
+  minReadySeconds: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: python-client-app
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: python-client-pod
+          image: vaddimart/play-with-python-grpc:python_client_v0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+            - containerPort: 50051
+          env:
+            - name: SERVER_HOST
+              value: "localhost"
+            - name: SERVER_PORT
+              value: "50051"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres-be
+spec:
+  selector:
+    matchLabels:
+      app: postgres-be
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: postgres-be
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: postgres
+          image: postgres
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "blog"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "root"
