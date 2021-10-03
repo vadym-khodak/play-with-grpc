@@ -1,3 +1,5 @@
+import logging
+
 import grpc
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +11,6 @@ from blog_post_pb2_grpc import BlogPosterStub
 
 
 class Post(BaseModel):
-    id_: int
     title: str
     text: str
     published: bool
@@ -29,9 +30,10 @@ def create_app() -> FastAPI:
     @app.post("/posts")
     async def create_post(post: Post):
         with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}') as channel:
+            logging.warning(f'{config.SERVER_HOST}:{config.SERVER_PORT}')
             stub = BlogPosterStub(channel)
             response = stub.CreatePost(BlogPost(**post.dict()))
-        print(response)
+        logging.warning(response)
         return {
             "id_": response.id_,
             "title": response.title,
@@ -43,10 +45,11 @@ def create_app() -> FastAPI:
     @app.get("/posts/{id_}")
     async def get_post(id_: int):
         with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}') as channel:
+            logging.warning(f'{config.SERVER_HOST}:{config.SERVER_PORT}')
             stub = BlogPosterStub(channel)
             response = stub.GetPost(BlogPost(id_=id_))
 
-        print(response)
+        logging.warning(response)
         return {
             "id_": response.id_,
             "title": response.title,
@@ -57,10 +60,11 @@ def create_app() -> FastAPI:
     @app.get("/posts")
     async def get_all_posts(page: int = 1, per_page: int = 10):
         with grpc.insecure_channel(f'{config.SERVER_HOST}:{config.SERVER_PORT}') as channel:
+            logging.warning(f'{config.SERVER_HOST}:{config.SERVER_PORT}')
             stub = BlogPosterStub(channel)
             response = stub.GetAllPost(GetAllPostRequest(page=page, per_page=per_page))
 
-        print(response)
+        logging.warning(response)
         return {
             "page": page,
             "per_page": per_page,
